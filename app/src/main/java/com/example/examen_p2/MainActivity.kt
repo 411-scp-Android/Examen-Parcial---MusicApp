@@ -7,11 +7,23 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
+import com.example.examen_p2.screens.DetailScreen
+import com.example.examen_p2.screens.HomeScreen
 import com.example.examen_p2.ui.theme.Examen_P2Theme
+import kotlinx.serialization.Serializable
+
+// Paso 3: Rutas de navegación con Serializable
+@Serializable
+object HomeRoute
+
+@Serializable
+data class DetailRoute(val albumId: String)
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,29 +31,38 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             Examen_P2Theme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+                MainNavigation()
             }
         }
     }
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    Examen_P2Theme {
-        Greeting("Android")
+fun MainNavigation() {
+    val navController = rememberNavController()
+    
+    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+        NavHost(
+            navController = navController,
+            startDestination = HomeRoute,
+            modifier = Modifier.padding(innerPadding)
+        ) {
+            composable<HomeRoute> {
+                HomeScreen(
+                    onAlbumClick = { id ->
+                        navController.navigate(DetailRoute(albumId = id))
+                    }
+                )
+            }
+            composable<DetailRoute> { backStackEntry ->
+                val detail: DetailRoute = backStackEntry.toRoute()
+                DetailScreen(
+                    albumId = detail.albumId,
+                    onBack = {
+                        navController.popBackStack()
+                    }
+                )
+            }
+        }
     }
 }
