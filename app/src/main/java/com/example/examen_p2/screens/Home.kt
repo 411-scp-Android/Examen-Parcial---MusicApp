@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.examen_p2.components.MiniPlayer
 import com.example.examen_p2.models.Album
 import com.example.examen_p2.services.retrofitService
 
@@ -169,7 +170,8 @@ fun AlbumCard(album: Album, onClick: () -> Unit) {
                 model = album.image,
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Crop,
+                onError = { println("Coil Error: ${it.result.throwable.message}") }
             )
             Box(
                 modifier = Modifier
@@ -230,52 +232,6 @@ fun RecentlyPlayedItem(album: Album, onClick: () -> Unit) {
                 Text(text = "${album.artist} • Popular Song", fontSize = 12.sp, color = Color.Gray)
             }
             Icon(Icons.Default.PlayArrow, contentDescription = null, tint = Color.LightGray)
-        }
-    }
-}
-
-@Composable
-fun MiniPlayer(album: Album) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-            .height(70.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF211134)),
-        shape = RoundedCornerShape(35.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            AsyncImage(
-                model = album.image,
-                contentDescription = null,
-                modifier = Modifier
-                    .size(50.dp)
-                    .clip(CircleShape),
-                contentScale = ContentScale.Crop
-            )
-            Spacer(modifier = Modifier.width(12.dp))
-            Column(modifier = Modifier.weight(1f)) {
-                Text(text = album.title, color = Color.White, fontWeight = FontWeight.Bold, maxLines = 1)
-                Text(text = album.artist, color = Color.White.copy(alpha = 0.7f), fontSize = 12.sp)
-            }
-            Surface(
-                shape = CircleShape,
-                color = Color.White,
-                modifier = Modifier.size(40.dp)
-            ) {
-                Icon(
-                    Icons.Default.PlayArrow,
-                    contentDescription = null,
-                    tint = Color.Black,
-                    modifier = Modifier.padding(8.dp)
-                )
-            }
-            Spacer(modifier = Modifier.width(8.dp))
         }
     }
 }

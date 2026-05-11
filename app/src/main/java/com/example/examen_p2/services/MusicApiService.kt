@@ -4,7 +4,6 @@ import com.example.examen_p2.models.Album
 import retrofit2.http.GET
 import retrofit2.http.Path
 
-// Esto asegura que el archivo mantenga el icono morado de Kotlin
 const val API_BASE_PATH = "api/"
 
 interface MusicApiService {
